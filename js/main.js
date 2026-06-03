@@ -47,6 +47,16 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+/* ── Scroll to top button ─────────────────────────────────────────── */
+(function() {
+  const btn = document.getElementById('scrollTopBtn');
+  if (!btn) return;
+  window.addEventListener('scroll', function() {
+    btn.style.opacity = window.scrollY > 400 ? '1' : '0';
+    btn.style.pointerEvents = window.scrollY > 400 ? 'auto' : 'none';
+  }, { passive: true });
+})();
+
 /* ── Nav hide on scroll down, show on scroll up ───────────────────── */
 (function() {
   let lastY = 0;
