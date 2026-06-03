@@ -88,7 +88,7 @@ function showSlides() {
   dots.forEach(d => d.style.backgroundColor = '#bbb');
   slideIndex++;
   if (slideIndex > slides.length) slideIndex = 1;
-  slides[slideIndex - 1].style.display = 'flex';
+  slides[slideIndex - 1].style.display = 'block';
   if (dots[slideIndex - 1]) dots[slideIndex - 1].style.backgroundColor = 'var(--accent-purple)';
   autoSlideTimer = setTimeout(showSlides, 4000);
 }
@@ -335,18 +335,19 @@ window.addEventListener('load', function() {
     }
   }
 
-  /* ── Testimonial cards — stagger fade ── */
-  gsap.utils.toArray('.testimonial-slide').forEach((slide, i) => {
-    gsap.fromTo(slide,
-      { opacity: 0, y: 25 },
+  /* ── Testimonial section fade-in (not individual slides — carousel controls those) ── */
+  const testimonialsSection = document.querySelector('.testimonials-section');
+  if (testimonialsSection) {
+    gsap.fromTo(testimonialsSection,
+      { opacity: 0, y: 30 },
       {
         opacity: 1, y: 0,
-        duration: 0.8,
+        duration: 1,
         ease: 'power2.out',
-        scrollTrigger: { trigger: slide, start: 'top 90%', toggleActions: 'play none none none' }
+        scrollTrigger: { trigger: testimonialsSection, start: 'top 85%', toggleActions: 'play none none none' }
       }
     );
-  });
+  }
 
   /* ── Contact section entrance ── */
   const contactSection = document.querySelector('#contact');
