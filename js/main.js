@@ -267,47 +267,30 @@ window.addEventListener('load', function() {
     });
   });
 
-  /* ── Mechanism cards — scroll-driven, one at a time ── */
-  const mechCards = gsap.utils.toArray('.mechanism-card');
-  if (mechCards.length) {
-    mechCards.forEach((card, i) => {
-      gsap.fromTo(card,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1, y: 0,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 65%',
-            end: 'bottom 20%',
-            toggleActions: 'play reverse play reverse'
-          }
-        }
-      );
+  /* ── Mechanism cards + Trance steps — scroll listener (sticky elements) ── */
+  function handleStickyCards(selector) {
+    const cards = document.querySelectorAll(selector);
+    if (!cards.length) return;
+    const wh = window.innerHeight;
+    cards.forEach((card, i) => {
+      const rect = card.getBoundingClientRect();
+      if (rect.top < wh * 0.65 && rect.bottom > wh * 0.2) {
+        gsap.to(card, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' });
+        cards.forEach((other, j) => {
+          if (j !== i) gsap.to(other, { opacity: 0, y: 50, duration: 0.5, ease: 'power2.in' });
+        });
+      } else if (rect.top > wh * 0.65) {
+        gsap.set(card, { opacity: 0, y: 50 });
+      }
     });
   }
 
-  /* ── Trance steps — same approach ── */
-  const tranceSteps = gsap.utils.toArray('.trance-step');
-  if (tranceSteps.length) {
-    tranceSteps.forEach((step, i) => {
-      gsap.fromTo(step,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1, y: 0,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: step,
-            start: 'top 65%',
-            end: 'bottom 20%',
-            toggleActions: 'play reverse play reverse'
-          }
-        }
-      );
-    });
-  }
+  window.addEventListener('scroll', () => {
+    handleStickyCards('.mechanism-card');
+    handleStickyCards('.trance-step');
+  }, { passive: true });
+  handleStickyCards('.mechanism-card');
+  handleStickyCards('.trance-step');
 
   /* ── Results cards — stagger ── */
   gsap.utils.toArray('.results-section .mind-card').forEach((card, i) => {
