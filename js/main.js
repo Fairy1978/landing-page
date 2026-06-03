@@ -173,6 +173,39 @@ document.addEventListener('click', function(e) {
 function setMobilePreview() { document.body.classList.add('force-mobile'); }
 function setDesktopPreview() { document.body.classList.remove('force-mobile'); }
 
+/* ── Mechanism cards + Trance steps (plain JS, no GSAP dependency) ── */
+function handleStickyCards(selector) {
+  const cards = document.querySelectorAll(selector);
+  if (!cards.length) return;
+  const wh = window.innerHeight;
+  cards.forEach((card, i) => {
+    const rect = card.getBoundingClientRect();
+    if (rect.top < wh * 0.65 && rect.bottom > wh * 0.2) {
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+      cards.forEach((other, j) => {
+        if (j !== i) {
+          other.style.opacity = '0';
+          other.style.transform = 'translateY(50px)';
+        }
+      });
+    } else if (rect.top > wh * 0.65) {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(50px)';
+    }
+  });
+}
+
+window.addEventListener('scroll', function() {
+  handleStickyCards('.mechanism-card');
+  handleStickyCards('.trance-step');
+}, { passive: true });
+
+document.addEventListener('DOMContentLoaded', function() {
+  handleStickyCards('.mechanism-card');
+  handleStickyCards('.trance-step');
+});
+
 /* ══════════════════════════════════════════════════════════════════
    GSAP ANIMATIONS — fires after DOM + GSAP are both ready
    ══════════════════════════════════════════════════════════════════ */
@@ -267,30 +300,6 @@ window.addEventListener('load', function() {
     });
   });
 
-  /* ── Mechanism cards + Trance steps — scroll listener (sticky elements) ── */
-  function handleStickyCards(selector) {
-    const cards = document.querySelectorAll(selector);
-    if (!cards.length) return;
-    const wh = window.innerHeight;
-    cards.forEach((card, i) => {
-      const rect = card.getBoundingClientRect();
-      if (rect.top < wh * 0.65 && rect.bottom > wh * 0.2) {
-        gsap.to(card, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' });
-        cards.forEach((other, j) => {
-          if (j !== i) gsap.to(other, { opacity: 0, y: 50, duration: 0.5, ease: 'power2.in' });
-        });
-      } else if (rect.top > wh * 0.65) {
-        gsap.set(card, { opacity: 0, y: 50 });
-      }
-    });
-  }
-
-  window.addEventListener('scroll', () => {
-    handleStickyCards('.mechanism-card');
-    handleStickyCards('.trance-step');
-  }, { passive: true });
-  handleStickyCards('.mechanism-card');
-  handleStickyCards('.trance-step');
 
   /* ── Results cards — stagger ── */
   gsap.utils.toArray('.results-section .mind-card').forEach((card, i) => {
