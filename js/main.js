@@ -178,18 +178,18 @@ function handleStickyCards(selector) {
   const cards = document.querySelectorAll(selector);
   if (!cards.length) return;
   const wh = window.innerHeight;
+  let activeIndex = -1;
   cards.forEach((card, i) => {
     const rect = card.getBoundingClientRect();
-    if (rect.top < wh * 0.65 && rect.bottom > wh * 0.2) {
+    if (rect.top < wh * 0.8 && rect.bottom > 0) {
+      activeIndex = i;
+    }
+  });
+  cards.forEach((card, i) => {
+    if (i === activeIndex) {
       card.style.opacity = '1';
       card.style.transform = 'translateY(0)';
-      cards.forEach((other, j) => {
-        if (j !== i) {
-          other.style.opacity = '0';
-          other.style.transform = 'translateY(50px)';
-        }
-      });
-    } else if (rect.top > wh * 0.65) {
+    } else {
       card.style.opacity = '0';
       card.style.transform = 'translateY(50px)';
     }
@@ -301,8 +301,8 @@ window.addEventListener('load', function() {
   });
 
 
-  /* ── Barrier section cards (trauma flow cards) — slide in from sides ── */
-  gsap.utils.toArray('.barrier-section .reveal').forEach((card, i) => {
+  /* ── Barrier section cards (trauma flow — NOT sticky mechanism cards) ── */
+  gsap.utils.toArray('.barrier-section .reveal:not(.mechanism-card)').forEach((card, i) => {
     const fromLeft = i % 2 === 0;
     gsap.fromTo(card,
       { opacity: 0, x: fromLeft ? -60 : 60 },
@@ -311,20 +311,6 @@ window.addEventListener('load', function() {
         duration: 0.8,
         ease: 'power2.out',
         scrollTrigger: { trigger: card, start: 'top 88%', toggleActions: 'play none none none' }
-      }
-    );
-  });
-
-  /* ── Mind section cards — scale up ── */
-  gsap.utils.toArray('.mind-section .mind-card').forEach((card, i) => {
-    gsap.fromTo(card,
-      { opacity: 0, scale: 0.9 },
-      {
-        opacity: 1, scale: 1,
-        duration: 0.7,
-        ease: 'back.out(1.2)',
-        delay: i * 0.1,
-        scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none none' }
       }
     );
   });
