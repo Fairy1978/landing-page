@@ -259,8 +259,8 @@ window.addEventListener('load', function() {
     delay: 2
   });
 
-  /* ── Generic .reveal scroll entrance ── */
-  gsap.utils.toArray('.reveal').forEach(el => {
+  /* ── Generic .reveal scroll entrance (skip sticky cards — handled separately) ── */
+  gsap.utils.toArray('.reveal:not(.mechanism-card):not(.trance-step)').forEach(el => {
     gsap.fromTo(el,
       { opacity: 0, y: 30, filter: 'blur(6px)' },
       {
@@ -300,6 +300,34 @@ window.addEventListener('load', function() {
     });
   });
 
+
+  /* ── Barrier section cards (trauma flow cards) — slide in from sides ── */
+  gsap.utils.toArray('.barrier-section .reveal').forEach((card, i) => {
+    const fromLeft = i % 2 === 0;
+    gsap.fromTo(card,
+      { opacity: 0, x: fromLeft ? -60 : 60 },
+      {
+        opacity: 1, x: 0,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: card, start: 'top 88%', toggleActions: 'play none none none' }
+      }
+    );
+  });
+
+  /* ── Mind section cards — scale up ── */
+  gsap.utils.toArray('.mind-section .mind-card').forEach((card, i) => {
+    gsap.fromTo(card,
+      { opacity: 0, scale: 0.9 },
+      {
+        opacity: 1, scale: 1,
+        duration: 0.7,
+        ease: 'back.out(1.2)',
+        delay: i * 0.1,
+        scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none none' }
+      }
+    );
+  });
 
   /* ── Results cards — stagger ── */
   gsap.utils.toArray('.results-section .mind-card').forEach((card, i) => {
