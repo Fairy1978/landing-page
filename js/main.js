@@ -197,24 +197,14 @@ window.addEventListener('load', function() {
     delay: 0.2
   });
 
-  /* ── Hero title — word-by-word on desktop, simple fade on mobile ── */
-  if (!isMobile) {
-    const titleEl = document.querySelector('.main-title');
-    if (titleEl) {
-      const words = titleEl.innerText.split(/\s+/);
-      titleEl.innerHTML = words.map(w => `<span class="word-wrap" style="display:inline-block;overflow:hidden;"><span class="word" style="display:inline-block;">${w}</span></span>`).join(' ');
-      gsap.from('.main-title .word', {
-        duration: 0.8,
-        yPercent: 110,
-        opacity: 0,
-        stagger: 0.08,
-        ease: 'power3.out',
-        delay: 0.4
-      });
-    }
-  } else {
-    gsap.from('.main-title', { duration: 1, opacity: 0, y: 20, ease: 'power2.out', delay: 0.3 });
-  }
+  /* ── Hero title ── */
+  gsap.from('.main-title', {
+    duration: 1.2,
+    opacity: 0,
+    y: 40,
+    ease: 'power3.out',
+    delay: 0.3
+  });
 
   /* ── Hero subtitle + CTA ── */
   gsap.from('.hero-section p, .hero-section .cta-btn', {
