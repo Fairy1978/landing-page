@@ -173,38 +173,40 @@ document.addEventListener('click', function(e) {
 function setMobilePreview() { document.body.classList.add('force-mobile'); }
 function setDesktopPreview() { document.body.classList.remove('force-mobile'); }
 
-/* ── Mechanism cards + Trance steps (plain JS, no GSAP dependency) ── */
-function handleStickyCards(selector) {
-  const cards = document.querySelectorAll(selector);
+/* ── Mechanism cards + Trance steps ─────────────────────────────── */
+function updateStickySection(containerId, cardSelector) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  var cards = container.querySelectorAll(cardSelector);
   if (!cards.length) return;
-  const wh = window.innerHeight;
-  let activeIndex = -1;
-  cards.forEach((card, i) => {
-    const rect = card.getBoundingClientRect();
-    if (rect.top < wh * 0.8 && rect.bottom > 0) {
-      activeIndex = i;
-    }
-  });
-  cards.forEach((card, i) => {
+
+  var rect = container.getBoundingClientRect();
+  var scrollable = container.offsetHeight - window.innerHeight;
+  if (scrollable <= 0) scrollable = container.offsetHeight;
+
+  var progress = -rect.top / scrollable;
+  progress = Math.max(0, Math.min(1, progress));
+
+  var activeIndex = Math.min(cards.length - 1, Math.floor(progress * cards.length));
+
+  for (var i = 0; i < cards.length; i++) {
     if (i === activeIndex) {
-      card.style.opacity = '1';
-      card.style.transform = 'translateY(0)';
+      cards[i].style.opacity = '1';
+      cards[i].style.transform = 'translateY(0)';
     } else {
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(50px)';
+      cards[i].style.opacity = '0';
+      cards[i].style.transform = 'translateY(50px)';
     }
-  });
+  }
 }
 
-window.addEventListener('scroll', function() {
-  handleStickyCards('.mechanism-card');
-  handleStickyCards('.trance-step');
-}, { passive: true });
+function tickStickyCards() {
+  updateStickySection('mechanism-steps', '.mechanism-card');
+  updateStickySection('trance-steps', '.trance-step');
+}
 
-document.addEventListener('DOMContentLoaded', function() {
-  handleStickyCards('.mechanism-card');
-  handleStickyCards('.trance-step');
-});
+window.addEventListener('scroll', tickStickyCards, { passive: true });
+window.addEventListener('load', tickStickyCards);
 
 /* ══════════════════════════════════════════════════════════════════
    GSAP ANIMATIONS — fires after DOM + GSAP are both ready
